@@ -1,196 +1,99 @@
 package com.pluralsight;
 
-import java.util.ArrayList;
 import java.util.Scanner;
-// This class handles the console-based interaction with the user, displaying menus,
-// capturing input, and performing operations on the dealership.
+
 public class UserInterface {
-    private static Dealership dealership;
-    // Private constructor to prevent instantiation
-    private UserInterface() {}
-    // This method launches the menu and keeps looping until the user exits
-    public static void display() {
-        init(); // Load the dealership from file
+    private Dealership dealership;
+
+    public void display() {
+        init();
         Scanner scanner = new Scanner(System.in);
-        boolean menuRunning = true;
-        while (menuRunning) {
-// Show menu options
-            System.out.println("\n=== Car Dealership Menu ===");
-            System.out.println("1 - Find vehicles by price");
-            System.out.println("2 - Find vehicles by make/model");
-            System.out.println("3 - Find vehicles by year range");
-            System.out.println("4 - Find vehicles by color");
-            System.out.println("5 - Find vehicles by mileage");
-            System.out.println("6 - Find vehicles by type");
-            System.out.println("7 - List all vehicles");
-            System.out.println("8 - Add a vehicle");
-            System.out.println("9 - Remove a vehicle");
-            System.out.println("99 - Quit");
-            System.out.print("Enter option: ");
-// Read user input
-            int option;
-            if (scanner.hasNextInt()) {
-                option = scanner.nextInt();
-                scanner.nextLine(); // consume newline
-            } else {
-                scanner.nextLine(); // discard invalid input
-                option = -1;
-            }
-// Route to the appropriate method
-            switch (option) {
-                case 1: processGetByPriceRequest(); break;
-                case 2: processGetByMakeModelRequest(); break;
-                case 3: processGetByYearRequest(); break;
-                case 4: processGetByColorRequest(); break;
-                case 5: processGetByMileageRequest(); break;
-                case 6: processGetByVehicleTypeRequest(); break;
-                case 7: processAllVehiclesRequest(); break;
-                case 8: processAddVehicleRequest(); break;
-                case 9: processRemoveVehicleRequest(); break;
-                case 99:
-                    System.out.println("Goodbye!");
-                    menuRunning = false;
+        while (true) {
+            System.out.println("\n--- Dealership Menu ---");
+            System.out.println("1. View All Vehicles");
+            System.out.println("2. Sell/Lease a Vehicle");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "1":
+                    processAllVehiclesRequest();
                     break;
+                case "2":
+                    processSaleOrLease();
+                    break;
+                case "0":
+                    return;
                 default:
                     System.out.println("Invalid option.");
             }
         }
     }
-    // Loads the dealership inventory from the file using DealershipFileManager
-    private static void init() {
+
+    private void init() {
         DealershipFileManager dfm = new DealershipFileManager();
-        dealership = dfm.getDealership();
+        this.dealership = dfm.getDealership();
     }
-    // Search for vehicles within a price range
-    public static void processGetByPriceRequest() {
+
+    private void displayVehicles(java.util.List<Vehicle> vehicles) {
+        for (Vehicle v : vehicles) {
+            System.out.println(v);
+        }
+    }
+
+    private void processAllVehiclesRequest() {
+        displayVehicles(dealership.getAllVehicles());
+    }
+
+    private void processSaleOrLease() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter minimum price: ");
-        double min = scanner.nextDouble();
-        System.out.print("Enter maximum price: ");
-        double max = scanner.nextDouble();
-        ArrayList<Vehicle> results = dealership.getVehiclesByPrice(min, max);
-        displayVehicles(results);
-    }
-    // Search for vehicles by make and model
-    public static void processGetByMakeModelRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter make: ");
-        String make = scanner.nextLine();
-        System.out.print("Enter model: ");
-        String model = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership.getVehiclesByMakeModel(make, model);
-        displayVehicles(results);
-    }
-    // Search for vehicles by year range
-    public static void processGetByYearRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter minimum year: ");
-        int min = scanner.nextInt();
-        System.out.print("Enter maximum year: ");
-        int max = scanner.nextInt();
-        ArrayList<Vehicle> results = dealership.getVehiclesByYear(min, max);
-        displayVehicles(results);
-    }
-    // Search for vehicles by color
-    public static void processGetByColorRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter color: ");
-        String color = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership.getVehiclesByColor(color);
-        displayVehicles(results);
-    }
-    // Search for vehicles by mileage
-    public static void processGetByMileageRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter minimum mileage: ");
-        int min = scanner.nextInt();
-        System.out.print("Enter maximum mileage: ");
-        int max = scanner.nextInt();
-        ArrayList<Vehicle> results = dealership.getVehiclesByMileage(min, max);
-        displayVehicles(results);
-    }
-    // Search for vehicles by type
-    public static void processGetByVehicleTypeRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter vehicle type: ");
-        String type = scanner.nextLine();
-        ArrayList<Vehicle> results = dealership.getVehiclesByType(type);
-        displayVehicles(results);
-    }
-    // Show all vehicles in the dealership
-    public static void processAllVehiclesRequest() {
-        ArrayList<Vehicle> vehicles = dealership.getAllVehicles();
-        displayVehicles(vehicles);
-    }
-    // Add a new vehicle to the inventory
-    public static void processAddVehicleRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter VIN: ");
-        int vin = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter year: ");
-        int year = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter make: ");
-        String make = scanner.nextLine();
-        System.out.print("Enter model: ");
-        String model = scanner.nextLine();
-        System.out.print("Enter type: ");
-        String type = scanner.nextLine();
-        System.out.print("Enter color: ");
-        String color = scanner.nextLine();
-        System.out.print("Enter mileage: ");
-        int mileage = scanner.nextInt();
-        System.out.print("Enter price: ");
-        double price = scanner.nextDouble();
-        Vehicle newVehicle = new Vehicle(vin, year, make, model, type, color, mileage, price);
-        dealership.addVehicle(newVehicle);
-        DealershipFileManager dfm = new DealershipFileManager();
-        dfm.saveDealership(dealership);
-        System.out.println("Vehicle added successfully.");
-    }
-    // Remove a vehicle by VIN
-    public static void processRemoveVehicleRequest() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter VIN of vehicle to remove: ");
-        int vin = scanner.nextInt();
-        Vehicle vehicleToRemove = null;
-        for (Vehicle currentVehicle : dealership.getAllVehicles()) {
-            if (currentVehicle.getVin() == vin) {
-                vehicleToRemove = currentVehicle;
+
+        System.out.print("Enter VIN of vehicle to sell/lease: ");
+        int vin = Integer.parseInt(scanner.nextLine());
+
+        Vehicle vehicle = null;
+        for (Vehicle v : dealership.getAllVehicles()) {
+            if (v.getVin() == vin) {
+                vehicle = v;
                 break;
             }
         }
-// Example of equivalent long form loop:
-// for (int index = 0; index < dealership.getAllVehicles().size(); index++) {
-// Vehicle currentVehicle = dealership.getAllVehicles().get(index);
-// if (currentVehicle.getVin() == vin) {
-// vehicleToRemove = currentVehicle;
-// break;
-// }
-// }
-        if (vehicleToRemove != null) {
-            dealership.removeVehicle(vehicleToRemove);
-            DealershipFileManager dfm = new DealershipFileManager();
-            dfm.saveDealership(dealership);
-            System.out.println("Vehicle removed successfully.");
-        } else {
-            System.out.println("Vehicle with that VIN not found.");
+
+        if (vehicle == null) {
+            System.out.println("Vehicle not found.");
+            return;
         }
-    }
-    // Utility method to display a list of vehicles, or a message if empty
-    private static void displayVehicles(ArrayList<Vehicle> vehicleList) {
-        if (vehicleList.isEmpty()) {
-            System.out.println("No vehicles found.");
-        } else {
-            for (Vehicle currentVehicle : vehicleList) {
-                System.out.println(currentVehicle);
+
+        System.out.print("Customer name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Customer email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Type (SALE or LEASE): ");
+        String type = scanner.nextLine().toUpperCase();
+
+        String date = java.time.LocalDate.now().toString();
+        Contract contract = null;
+
+        if (type.equals("SALE")) {
+            System.out.print("Finance? (yes/no): ");
+            boolean finance = scanner.nextLine().equalsIgnoreCase("yes");
+            contract = new SalesContract(date, name, email, vehicle, finance);
+        } else if (type.equals("LEASE")) {
+            if (java.time.Year.now().getValue() - vehicle.getYear() > 3) {
+                System.out.println("Cannot lease vehicle older than 3 years.");
+                return;
             }
-// Example of equivalent long form loop:
-// for (int index = 0; index < vehicleList.size(); index++) {
-// Vehicle currentVehicle = vehicleList.get(index);
-// System.out.println(currentVehicle);
-// }
+            contract = new LeaseContract(date, name, email, vehicle);
+        } else {
+            System.out.println("Invalid contract type.");
+            return;
         }
+
+        new ContractFileManager().saveContract(contract);
+        dealership.removeVehicle(vehicle);
+        System.out.println("Contract saved and vehicle removed from inventory.");
     }
 }

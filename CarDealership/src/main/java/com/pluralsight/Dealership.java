@@ -6,7 +6,7 @@ public class Dealership {
     private String name;
     private String address;
     private String phone;
-    private final ArrayList<Vehicle> inventory;
+    private ArrayList<Vehicle> inventory;
 
     public Dealership(String name, String address, String phone) {
         this.name = name;
@@ -14,7 +14,6 @@ public class Dealership {
         this.phone = phone;
         this.inventory = new ArrayList<>();
     }
-
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -29,15 +28,19 @@ public class Dealership {
         inventory.add(vehicle);
     }
 
+    public void removeVehicle(Vehicle vehicle) {
+        inventory.remove(vehicle);
+    }
+
     public ArrayList<Vehicle> getAllVehicles() {
         return inventory;
     }
 
+    // Placeholder search methods
     public ArrayList<Vehicle> getVehiclesByPrice(double min, double max) { return null; }
     public ArrayList<Vehicle> getVehiclesByMakeModel(String make, String model) { return null; }
     public ArrayList<Vehicle> getVehiclesByYear(int min, int max) { return null; }
     public ArrayList<Vehicle> getVehiclesByColor(String color) { return null; }
     public ArrayList<Vehicle> getVehiclesByMileage(int min, int max) { return null; }
     public ArrayList<Vehicle> getVehiclesByType(String type) { return null; }
-    public void removeVehicle(Vehicle vehicle) { }
 }
